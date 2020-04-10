@@ -1,0 +1,1 @@
+export { ProdutoViewModule } from './app/app.module';
