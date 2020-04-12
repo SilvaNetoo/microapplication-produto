@@ -28,7 +28,7 @@ export class ProdutoService {
   }
 
   putCarrinho(idUser: string, prod: Produto): Observable<any> {
-    return this.httpClient.put<any>(`${'http://desktop-nrm99hp:8000'}/${'usuarios'}/${'produtos'}/${idUser}`, prod);
+    return this.httpClient.put<any>(`${'http://desktop-nrm99hp:9000'}/${'usuarios'}/${'produtos'}/${idUser}`, prod);
   }
 
   put(object: Produto, id: string): Observable<Produto> {

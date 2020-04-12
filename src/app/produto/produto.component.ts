@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProdutoList } from './models/produto-list.model';
 import { ProdutoService } from './service/produto.service';
+import { Produto } from './models/produto.model';
 
 @Component({
   selector: 'product-view',
@@ -60,6 +61,7 @@ export class ProdutoComponent implements OnInit {
       const productcartele = document.querySelector('cart-view');
       if (productcartele != null) {
         productcartele['message'] = product;
+        this.adicionarProduto(product);
       }
     }
   }
@@ -78,6 +80,13 @@ export class ProdutoComponent implements OnInit {
   }
   get message(): string { return this._message; }
 
+  @Input()
+  set user(user: string) {
+    console.log('user', user);
+    
+    localStorage.setItem('user', user);
+  }
+
   cadastro() {
     if (this.productForm.valid) {
       this.produtoService.post(this.productForm.value).subscribe(res => {
@@ -87,6 +96,18 @@ export class ProdutoComponent implements OnInit {
       }, err => {
         console.log('err', err);
       })
+    }
+  }
+
+  adicionarProduto(produto: Produto) {
+    console.log('local');
+    if (produto && JSON.parse(localStorage.getItem('user'))[0].id) {
+      this.produtoService.putCarrinho(JSON.parse(localStorage.getItem('user'))[0].id, produto)
+        .subscribe(res => {
+          console.log('res', res);
+        }, err => {
+          console.log('err', err);
+        })
     }
   }
 
