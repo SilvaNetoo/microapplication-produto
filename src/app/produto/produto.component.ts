@@ -1,4 +1,7 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProdutoList } from './models/produto-list.model';
+import { ProdutoService } from './service/produto.service';
 
 @Component({
   selector: 'product-view',
@@ -6,50 +9,51 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./produto.component.css'],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class ProdutoComponent {
-  public productlist: any[] = [
-    {
-      productname: 'JBL Flip 4',
-      code: 'cat1-0001',
-      price: 18.01,
-      cartprice: 0,
-      available: 10,
-      qty: 0
-    }, {
-      productname: 'Bose Sound Link',
-      code: 'cat1-0010',
-      price: 129.05,
-      cartprice: 0,
-      available: 9,
-      qty: 0
-    }, {
-      productname: 'AB Portable',
-      code: 'cat1-0008',
-      price: 19.78,
-      cartprice: 0,
-      available: 11,
-      qty: 0
-    }, {
-      productname: 'AE-9 Portable',
-      code: 'cat1-0011',
-      price: 299.99,
-      cartprice: 0,
-      available: 8,
-      qty: 0
-    }, {
-      productname: 'JBL Pulse 3',
-      code: 'cat1-0009',
-      price: 23.05,
-      cartprice: 0,
-      available: 10,
-      qty: 0
-    }
-  ];
+export class ProdutoComponent implements OnInit {
 
-  constructor() { }
+  productForm: FormGroup;
+  _message: string;
+  public productlist: Array<ProdutoList> = new Array<ProdutoList>();
+
+  constructor(
+    private fb: FormBuilder,
+    private produtoService: ProdutoService
+  ) { }
+
+  ngOnInit() {
+    this.createForm();
+    this.findProducts();
+  }
+
+  async findProducts() {
+    await this.produtoService.get().subscribe(listProd => {
+      if (listProd && listProd.length) {
+        this.productlist = new Array<ProdutoList>();
+        listProd.forEach(prod => {
+          this.productlist.push({
+            id: prod.id,
+            nome: prod.nome,
+            preco: prod.preco,
+            quantidade: prod.quantidade,
+            qty: 0
+          })
+        })
+      }
+    }, err => {
+      console.log('err', err);
+    })
+  }
+
+  createForm() {
+    this.productForm = this.fb.group({
+      nome: ['', Validators.required],
+      preco: ['', Validators.required],
+      quantidade: ['', Validators.required],
+    })
+  }
 
   public addToCart(product) {
-    if (product.qty === product.available) {
+    if (product.qty === product.quantidade) {
       console.log('Product is out of Stock.');
     } else {
       product.qty = product.qty + 1;
@@ -65,7 +69,7 @@ export class ProdutoComponent {
   set message(message: string) {
     let productObj = message;
     for (let product of this.productlist) {
-      if (product.productname === productObj['productname']) {
+      if (product.nome === productObj['nome']) {
         product.qty = productObj['qty'];
         break;
       }
@@ -73,6 +77,17 @@ export class ProdutoComponent {
 
   }
   get message(): string { return this._message; }
-  _message: string;
+
+  cadastro() {
+    if (this.productForm.valid) {
+      this.produtoService.post(this.productForm.value).subscribe(res => {
+        console.log('res', res);
+        this.findProducts();
+        this.productForm.reset();
+      }, err => {
+        console.log('err', err);
+      })
+    }
+  }
 
 }

@@ -1,25 +1,56 @@
 {{_message}}
 <div class="col-sm-7">
     <div class="panel panel-primary">
-        <div class="panel-heading">Product List</div>
+        <div class="panel-heading">Lista de Produtos</div>
         <div class="panel-body fixed-panel">
+
+            <form [formGroup]="productForm" (ngSubmit)="cadastro()">
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="input-group input-group-sm pb-3">
+                            <input type="text" class="form-control" id="nome-field" formControlName="nome" name="nome"
+                                placeholder="Nome">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group input-group-sm pb-3">
+                            <input type="number" class="form-control" id="preco-field" formControlName="preco"
+                                name="preco" placeholder="Preço">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group input-group-sm pb-3">
+                            <input type="number" class="form-control" id="quantidade-field" formControlName="quantidade"
+                                name="quantidade" placeholder="Quantidade">
+                        </div>
+                    </div>
+
+                    <div class="input-group input-group-sm pb-3">
+                        <button type="button" type="submit"
+                            class="btn btn-color btn-sm btn-block bold-font float-right ">Cadastrar Produto</button>
+                    </div>
+
+                </div>
+            </form>
+
+
             <div class='table-responsive'>
                 <table class='table'>
                     <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Code</th>
-                            <th>Price</th>
-                            <th>Available</th>
-                            <th></th>
+                            <th>Produto</th>
+                            <th>Preço</th>
+                            <th>Quantidade</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let product of productlist">
-                            <td>{{product.productname}}</td>
-                            <td>{{product.code}}</td>
-                            <td>{{product.price | currency: 'USD' :true: '1.2-2'}}</td>
-                            <td>{{product.available - product.qty}}</td>
+                            <td>{{product.nome}}</td>
+                            <td>{{product.preco | currency: 'BRL' :true: '1.2-2'}}</td>
+                            <td>{{product.quantidade - product.qty}}</td>
                             <td>
                                 <a class="btn btn-primary" (click)="addToCart(product)">Add</a>
                             </td>
