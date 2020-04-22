@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProdutoList } from './models/produto-list.model';
-import { ProdutoService } from './service/produto.service';
 import { Produto } from './models/produto.model';
+import { ProdutoService } from './service/produto.service';
 
 @Component({
   selector: 'product-view',
@@ -83,7 +83,7 @@ export class ProdutoComponent implements OnInit {
   @Input()
   set user(user: string) {
     console.log('user', user);
-    
+    localStorage.setItem('user', null);
     localStorage.setItem('user', user);
   }
 
@@ -100,9 +100,9 @@ export class ProdutoComponent implements OnInit {
   }
 
   adicionarProduto(produto: Produto) {
-    console.log('local');
-    if (produto && JSON.parse(localStorage.getItem('user'))[0].id) {
-      this.produtoService.putCarrinho(JSON.parse(localStorage.getItem('user'))[0].id, produto)
+    console.log('local', localStorage.getItem('user'));
+    if (produto && localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).id) {
+      this.produtoService.putCarrinho(JSON.parse(localStorage.getItem('user')).id, produto)
         .subscribe(res => {
           console.log('res', res);
         }, err => {

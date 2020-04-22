@@ -1,7 +1,7 @@
 {
   "name": "mf-pd-tcc",
   "author": "José Valdir Gonçalves da Silva Neto",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "license": "MIT",
   "main": "bundles/mf-pd-tcc.umd.js",
   "module": "index.js",
